@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6f6b">
+<meta name="apple-mobile-web-app-title" content="研究紹介">
+<title>小林 裕 | 研究紹介</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#1f2933;--sub:#5f6c7b;--accent:#1f6f6b;--on:#fff;--line:#e1e5ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181c;--card:#1c2228;--text:#e8ecf0;--sub:#9aa6b2;--accent:#5fc4bd;--on:#0f2523;--line:#2c353d}}
+:root[data-theme="dark"]{--bg:#14181c;--card:#1c2228;--text:#e8ecf0;--sub:#9aa6b2;--accent:#5fc4bd;--on:#0f2523;--line:#2c353d}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px;padding-bottom:76px;
+font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px}
+header{padding:12px 4px 4px;position:relative}
+h1{padding-right:92px}
+.lang{position:absolute;right:4px;top:14px;min-height:38px;padding:0 14px;border-radius:999px;border:1.5px solid var(--accent);background:var(--card);color:var(--accent);font-weight:600;font-size:.88rem;font-family:inherit;cursor:pointer}
+h1{font-size:1.7rem;margin:0;line-height:1.3}
+.en{color:var(--sub);margin:0 0 6px}
+.affil{margin:0;color:var(--sub);font-size:.92rem}
+.quick{display:flex;gap:10px;margin:14px 0 4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;
+background:var(--accent);color:var(--on);text-decoration:none;font-weight:600;font-size:.95rem}
+.quick .btn{flex:1}
+.btn.o{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.off{opacity:.45;pointer-events:none}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+h2{font-size:1.1rem;margin:0 0 8px;color:var(--accent)}
+h3{font-size:1rem;margin:16px 0 0}
+h3:first-of-type{margin-top:4px}
+p{margin:6px 0}
+.tag{display:inline-block;margin:2px 4px 2px 0;padding:0 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:.85rem}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.gal figure{margin:0}
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block;cursor:zoom-in;background:var(--bg)}
+.gal figcaption{font-size:.78rem;color:var(--sub);line-height:1.4;margin-top:2px}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.files .btn{min-height:40px;font-size:.88rem}
+ul{padding:0;margin:0;list-style:none}
+li{padding:8px 0;border-bottom:1px dashed var(--line)}
+li:last-child{border:0}
+.yr{color:var(--sub);margin-right:.6em;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+.contact a{word-break:break-all}
+.status{text-align:center;font-size:.8rem;color:var(--sub);margin-top:18px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--line);
+padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav a{flex:1;text-align:center;text-decoration:none;color:var(--sub);font-size:.72rem;line-height:1.3;padding:2px 0}
+nav a b{display:block;font-size:1.25rem;font-weight:400}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:10;padding:16px}
+#lb img{max-width:100%;max-height:80%;border-radius:8px}
+#lb p{color:#fff;font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <button id="lang" class="lang" type="button" aria-label="Language"></button>
+  <h1 id="name"></h1>
+  <p class="en" id="nameEn"></p>
+  <p class="affil" id="affil"></p>
+  <div class="quick" id="quick"></div>
+</header>
+<section id="intro"><h2 data-i="intro"></h2><div id="introBody"></div></section>
+<section id="research"><h2 data-i="research"></h2><div id="researchBody"></div></section>
+<div id="extra"></div>
+<section id="contact" class="contact"><h2 data-i="contact"></h2><ul id="contactList"></ul></section>
+<p class="status"><span id="offline"></span><span data-i="upd"></span><span id="updated"></span></p>
+</div>
+<nav id="nav"></nav>
+<div id="lb"><img alt=""><p></p></div>
+
+<script>
+/* ★★★ 編集するのはこの DATA だけ ★★★
+   文章は {ja:"日本語", en:"English"} の形で書きます(文字列だけでも可。その場合は両言語で同じ表示)。
+   画像: {src:"assets/fig1.jpg", caption:{ja:"図1",en:"Fig. 1"}}   PDF: {label:{ja:"ポスター",en:"Poster"}, src:"assets/poster.pdf"} */
+const ph = t => "data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='800' height='600' fill='#d9e6e5'/><text x='400' y='310' font-size='40' text-anchor='middle' fill='#1f6f6b' font-family='sans-serif'>" + t + "</text></svg>");
+
+const DATA = {
+  name: {ja: "小林 裕", en: "Yutaka KOBAYASHI"},
+  affil: {ja: "同志社大学大学院 生命医科学研究科 医生命システム専攻 博士後期課程3年 / 神経生理学研究室（齋藤研）",
+          en: "Ph.D. Student (Year 3), Graduate School of Life and Medical Sciences, Doshisha University / Neurophysiology Lab"},
+  profile: {
+    text: {ja: "○○の分野で、△△のメカニズム解明を目指して研究しています。実験と数理モデルの両面からアプローチします。共同研究・ご質問はお気軽にどうぞ。",
+           en: "I study the mechanisms of △△ in the field of ○○, combining experiments and mathematical modeling. Feel free to contact me about collaborations or questions."},
+    tags: [{ja: "環状アデノシン一リン酸：cAMP", en: "cyclic adenosine monophosphate: cAMP"}, {ja: "キーワードB", en: "Keyword B"}, {ja: "キーワードC", en: "Keyword C"}],
+    images: [{src: "assets/fig1.jpg", caption: {ja: "あばば", en: "At the lab"}}],
+    files: []
+  },
+  researchTop: {
+  files: [{label: {ja: "ポスターPDF", en: "Poster (PDF)"}, src: "assets/Neuro2026_poster.pdf"},
+          {label: {ja: "要旨PDF", en: "Abstract (PDF)"}, src: ""}]
+},
+  research: [
+    {title: {ja: "テーマ1: 青色光活性化型ホスホジエステラーゼの開発", en: "Theme 1: Development of blue light activatable Phosphodiesterase"},
+     body: {ja: "背景・目的・成果を3〜5行で。詳細は下のPDFをご覧ください。", en: "Background, aims and results in 3–5 lines. See the PDFs below for details."},
+     images: [{src: "assets/錐体細胞_gCarvi_拡大.png", caption: {ja: "図1 研究の概要", en: "Fig. 1 Overview"}},
+              {src: ph("Fig. 2"), caption: {ja: "図2 主な結果", en: "Fig. 2 Main results"}}],
+     files: [/*{label: {ja: "ポスターPDF", en: "Poster (PDF)"}, src: ""}, {label: {ja: "要旨PDF", en: "Abstract (PDF)"}, src: ""}*/]},  /* src が空だと「準備中」表示 */
+    {title: {ja: "テーマ2: 海馬神経細胞における後期長期増強誘導時のcAMP動態の解析", en: "Theme 2: cAMP dynamics during L-LTP"},
+     body: {ja: "ポスターの内容と対応させておくと、QRから来た方が理解しやすくなります。", en: "Matching this to your poster helps visitors who arrive via the QR code."},
+     images: [{src: ph("Fig. 3"), caption: {ja: "図3 装置の模式図", en: "Fig. 3 Setup schematic"}}], files: []}
+  ],
+  /* ▼ 自由に追加・削除・並べ替えできる項目(上から順に表示)
+     title: 見出し / icon: 下メニューの絵文字(省略可) / short: 下メニュー用の短い名前(省略可) / nav:false でメニューに出さない
+     items: 1行ずつの内容。year は省略可。images・files も付けられます。items が空なら項目ごと非表示。 */
+  /*sections: [
+    {title: {ja: "受賞・助成", en: "Awards & Grants"}, icon: "🏅", short: {ja: "受賞", en: "Awards"},
+     items: [
+       {year: 2026, text: {ja: "○○学会 若手奨励賞", en: "Young Investigator Award, ○○ Society"}, files: []}
+     ]},
+    {title: {ja: "経歴", en: "Career"}, icon: "🎓",
+     items: [
+       {year: "2024–", text: {ja: "○○大学大学院 博士後期課程", en: "Ph.D. course, ○○ University"}},
+       {year: "2022", text: {ja: "○○大学 修士課程修了", en: "M.S., ○○ University"}}
+     ]}
+  ],*/
+  email: {user: "cygk2002", domain: "mail4.doshisha.ac.jp"},   /* スパム対策で分割 */
+  researchmap: "https://researchmap.jp/1Fuji-Yutaka-3Nasubi",
+  updated: {ja: "2026年10月23日", en: "Oct 23, 2026"}
+};
+
+/* 画面の固定文言(通常は編集不要) */
+const UI = {
+  ja: {intro: "自己紹介", research: "研究内容", awards: "受賞・助成", contact: "連絡先", nIntro: "自己紹介", nResearch: "研究", nAwards: "受賞", nContact: "連絡先",
+       mail: "✉️ メール", rm: "🔗 researchmap", soon: "(準備中)", upd: "最終更新:", off: "📥 オフライン閲覧用に保存済み ・ ", btn: "English"},
+  en: {intro: "About me", research: "Research", awards: "Awards & Grants", contact: "Contact", nIntro: "About", nResearch: "Research", nAwards: "Awards", nContact: "Contact",
+       mail: "✉️ Email", rm: "🔗 researchmap", soon: " (coming soon)", upd: "Last updated: ", off: "📥 Saved for offline use · ", btn: "日本語"}
+};
+
+const $ = id => document.getElementById(id);
+const el = (t, x, c) => { const e = document.createElement(t); if (x != null) e.textContent = x; if (c) e.className = c; return e; };
+
+function initLang() {
+  const p = new URLSearchParams(location.search).get("lang");   /* 例: …/index.html?lang=en で英語版を直接開ける */
+  if (p === "en" || p === "ja") return p;
+  try { const s = localStorage.getItem("lang"); if (s === "en" || s === "ja") return s; } catch (e) {}
+  return (navigator.language || "ja").startsWith("ja") ? "ja" : "en";
+}
+let lang = initLang(), saved = false;
+const t = x => (x && typeof x === "object") ? (x[lang] || x.ja || x.en || "") : (x == null ? "" : x);
+
+function attach(parent, it) {
+  if (it.images && it.images.length) {
+    const g = el("div", null, "gal");
+    it.images.forEach(m => {
+      const f = el("figure"), i = el("img"); i.src = m.src; i.alt = t(m.caption); i.loading = "lazy";
+      i.onclick = () => { const b = $("lb"); b.querySelector("img").src = m.src; b.querySelector("p").textContent = t(m.caption); b.style.display = "flex"; };
+      f.appendChild(i); if (m.caption) f.appendChild(el("figcaption", t(m.caption))); g.appendChild(f);
+    });
+    parent.appendChild(g);
+  }
+  if (it.files && it.files.length) {
+    const d = el("div", null, "files");
+    it.files.forEach(f => {
+      const a = el("a", "📄 " + t(f.label) + (f.src ? "" : UI[lang].soon), "btn o" + (f.src ? "" : " off"));
+      if (f.src) { a.href = f.src; a.target = "_blank"; a.rel = "noopener"; }
+      d.appendChild(a);
+    });
+    parent.appendChild(d);
+  }
+}
+$("lb").onclick = () => { $("lb").style.display = "none"; };
+
+function render() {
+  const U = UI[lang];
+  document.documentElement.lang = lang;
+  document.title = t(DATA.name) + (lang === "ja" ? " | 研究紹介" : " | Research");
+  ["quick", "introBody", "researchBody", "extra", "contactList", "nav"].forEach(id => { $(id).textContent = ""; });
+  document.querySelectorAll("[data-i]").forEach(e => { e.textContent = U[e.dataset.i]; });
+  $("lang").textContent = U.btn;
+  $("name").textContent = t(DATA.name);
+  $("nameEn").textContent = lang === "ja" ? DATA.name.en : DATA.name.ja;
+  $("affil").textContent = t(DATA.affil);
+
+  const addr = DATA.email.user + "@" + DATA.email.domain;
+  const b1 = el("a", U.mail, "btn"); b1.href = "mailto:" + addr; $("quick").appendChild(b1);
+  const b2 = el("a", U.rm, "btn o"); b2.href = DATA.researchmap; b2.target = "_blank"; b2.rel = "noopener"; $("quick").appendChild(b2);
+
+  const ib = $("introBody");
+  ib.appendChild(el("p", t(DATA.profile.text)));
+  DATA.profile.tags.forEach(k => ib.appendChild(el("span", t(k), "tag")));
+  attach(ib, DATA.profile);
+
+  const rb = $("researchBody");
+  attach(rb, DATA.researchTop || {});
+  DATA.research.forEach(r => { rb.appendChild(el("h3", t(r.title))); rb.appendChild(el("p", t(r.body))); attach(rb, r); });
+
+  const secs = (DATA.sections || []).filter(s => s.items && s.items.length);
+  secs.forEach((s, n) => {
+    const sec = el("section"); sec.id = "s" + n;
+    sec.appendChild(el("h2", t(s.title)));
+    const ul = el("ul");
+    s.items.forEach(a => { const li = el("li"); if (a.year) li.appendChild(el("span", a.year, "yr")); li.appendChild(document.createTextNode(t(a.text))); attach(li, a); ul.appendChild(li); });
+    sec.appendChild(ul); $("extra").appendChild(sec);
+  });
+  const addNav = (id, ic, lb) => { const a = el("a"); a.href = "#" + id; a.appendChild(el("b", ic)); a.appendChild(document.createTextNode(lb)); $("nav").appendChild(a); };
+  addNav("intro", "👤", U.nIntro); addNav("research", "🔬", U.nResearch);
+  secs.forEach((s, n) => { if (s.nav !== false) addNav("s" + n, s.icon || "📌", t(s.short || s.title)); });
+  addNav("contact", "✉️", U.nContact);
+
+  const cl = $("contactList");
+  let li = el("li", "Email: "); const ma = el("a", addr); ma.href = "mailto:" + addr; li.appendChild(ma); cl.appendChild(li);
+  li = el("li", "researchmap: "); const ra = el("a", DATA.researchmap); ra.href = DATA.researchmap; ra.target = "_blank"; ra.rel = "noopener"; li.appendChild(ra); cl.appendChild(li);
+
+  $("updated").textContent = t(DATA.updated);
+  $("offline").textContent = saved ? U.off : "";
+}
+$("lang").onclick = () => {
+  lang = lang === "ja" ? "en" : "ja";
+  try { localStorage.setItem("lang", lang); } catch (e) {}
+  try { const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u); } catch (e) {}
+  render();
+};
+render();
+
+/* ---- オフライン対応(公開先が https のときだけ動作) ---- */
+(async () => {
+  try {
+    if (!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
+    await navigator.serviceWorker.register("sw.js");
+    await navigator.serviceWorker.ready;
+    const base = location.href.split("#")[0];
+    const urls = [base, base.split("?")[0]];
+    const add = s => { if (s && !s.startsWith("data:")) urls.push(new URL(s, location.href).href); };
+    const walk = it => { (it.images || []).forEach(m => add(m.src)); (it.files || []).forEach(f => add(f.src)); };
+    walk(DATA.profile); walk(DATA.researchTop || {}); DATA.research.forEach(walk); (DATA.sections || []).forEach(s => (s.items || []).forEach(walk));
+    const c = await caches.open("kenkyu-v1");
+    await Promise.allSettled([...new Set(urls)].map(u => c.add(u)));
+    saved = true; render();
+  } catch (e) { /* 非対応環境では何もしない */ }
+})();
+</script>
+</body>
+</html>
